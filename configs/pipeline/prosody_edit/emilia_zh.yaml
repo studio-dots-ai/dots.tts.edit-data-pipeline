@@ -1,0 +1,11 @@
+# @package _global_
+
+defaults:
+  - emilia_en
+  - _self_
+
+run_dir: ${artifact:worktree}/distributed_pipeline_runs/prosody_edit/emilia_zh
+
+pipeline_config:
+  sample_language: zh
+  output_dataset_name: Emilia-ProsodyEdit-ZH-V1

@@ -1,0 +1,12 @@
+defaults:
+  - /service/model_defaults@_here_
+  - _self_
+
+config_key: f5_tts/defaults
+port: 8001
+gpu_ids: "0"
+python_bin: envs/pipe-gpu/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/f5-tts/api_service.py
+  --port ${.port}

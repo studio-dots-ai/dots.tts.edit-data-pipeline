@@ -1,0 +1,13 @@
+# @package _global_
+
+defaults:
+  - /pipeline/text_edit/defaults
+  - _self_
+
+run_dir: ${artifact:worktree}/distributed_pipeline_runs/text_edit/emilia_large_edit
+
+pipeline_config:
+  span_level_weights: {word: 0.0, phrase: 0.0, clause: 3.0, sentence: 0.5, arbitrary: 6.0}
+  op_count_weights: {1: 1.0, 2: 3.0, 3: 6.0}
+  min_edit_distance_pct: 0.60
+  min_preserved_source_ratio: 0.10

@@ -1,0 +1,40 @@
+[project]
+name = "pipe-asr"
+version = "0.1.0"
+description = "Qwen3-ASR with vLLM 0.14.0 — fast batch ASR inference (optional; HF mode available in pipe-gpu)"
+requires-python = ">=3.10,<3.11"
+
+dependencies = [
+    "pytest>=9.0",
+    
+    # ── vLLM 0.14.0 (brings torch 2.9.1) ──────────────────────────
+    "vllm==0.14.0",
+
+    # ── Web framework ─────────────────────────────────────────────
+    "fastapi>=0.127,<1.0",
+    "uvicorn>=0.38,<1.0",
+    "pydantic>=2.7,<3.0",
+    "requests>=2.31,<3.0",
+
+    # ── Audio processing ───────────────────────────────────────────
+    "librosa>=0.10.2,<0.12",
+    "soundfile>=0.12,<0.14",
+    "numpy==1.26.4",
+
+    # ── Database ───────────────────────────────────────────────────
+    "psycopg[binary]>=3.2,<4",
+    "psycopg-pool>=3.2,<4",
+
+    # ── Local package ──────────────────────────────────────────────
+    "qwen-asr",
+]
+
+[tool.uv]
+index-url = "https://pypi.org/simple"
+
+override-dependencies = [
+    "numpy==1.26.4",
+]
+
+[tool.uv.sources]
+qwen-asr = { path = "../../tools/qwen3-asr/upstream", editable = true }

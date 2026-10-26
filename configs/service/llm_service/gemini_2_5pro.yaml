@@ -1,0 +1,13 @@
+defaults:
+  - /service/defaults@_here_
+  - _self_
+
+config_key: llm_service/gemini_2_5pro
+port: 8012
+python_bin: envs/pipe-llm/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/llm-service/api_service.py
+  --port ${.port}
+  --default-backend gemini
+  --gemini-model 2_5pro

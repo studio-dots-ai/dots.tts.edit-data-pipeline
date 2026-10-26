@@ -1,0 +1,77 @@
+# @package _global_
+
+defaults:
+  - /pipeline/defaults@_global_
+  - /stage/sample/defaults@_global_.stages.sample
+  - /stage/plan/gemma4_mtp_tp2@_global_.stages.plan
+  - /stage/synth/pause@_global_.stages.synth
+  - /stage/eval/pause@_global_.stages.eval
+  - /stage/save/parquet@_global_.stages.save
+  - _self_
+
+pipeline: pause_edit
+adapter_class: speech_edit.pipelines.pause.stage_adapter:PauseEditStageAdapter
+run_dir: ${artifact:worktree}/distributed_pipeline_runs/pause_edit/defaults
+
+queues:
+  source_items: {max_size: 4096}
+  pause.sample_to_plan: {max_size: 4096}
+  pause.plan_to_synth: {max_size: 16384}
+  pause.synth_to_eval: {max_size: 8192}
+  pause.eval_to_save: {max_size: 8192}
+
+topology:
+  bindings:
+    source_items:
+      consumers: [sample]
+    pause.sample_to_plan:
+      producers: [sample]
+      consumers: [plan]
+    pause.plan_to_synth:
+      producers: [plan]
+      consumers: [synth]
+    pause.synth_to_eval:
+      producers: [synth]
+      consumers: [eval]
+    pause.eval_to_save:
+      producers: [eval]
+      consumers: [save]
+
+stages:
+  sample:
+    max_workers: 4
+
+  plan:
+    max_workers: 8
+
+  synth:
+    max_workers: 16
+
+  eval:
+    max_workers: 16
+
+  save:
+    max_workers: 4
+
+pipeline_config:
+  seed: 42
+  num_profiles: 1
+  num_operation_weights: {1: 0.1, 2: 0.2, 3: 0.7}
+  boundary_type_weights: {punct: 0.4, nonpunct: 0.6}
+  pause_level_weights: {1: 0.3, 2: 0.4, 3: 4}
+  sample_language: en
+  min_duration: 2.0
+  max_duration: 26.0
+  aligner_backend: qwen3
+  synth_method: single_region
+  expand_radius: 0.16
+  merge_gap: 0.05
+  skip_utmos_eval: false
+  skip_spk_sim_eval: false
+  skip_wdtw_eval: false
+  output_dataset_name: Emilia-PauseEdit-V1
+  center_regen_second_pass: true
+  center_regen_margin_sec: null
+  llm_max_retries: 3
+  sample_id_prefix: ''
+  evaluate: true

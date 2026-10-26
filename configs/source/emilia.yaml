@@ -1,0 +1,6 @@
+# @package _global_
+source:
+  queue_name: source_items
+  rows_per_item: 256
+  inputs:
+    - path: /path/to/data/emilia

@@ -1,0 +1,13 @@
+defaults:
+  - /service/defaults@_here_
+  - /service/qwen3_aligner/defaults@dependencies.qwen3_aligner
+  - _self_
+
+config_key: aligner_gateway/qwen3
+port: 8029
+python_bin: envs/pipe-cpu/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/aligner-service/api_service.py
+  --port ${.port}
+  --qwen3-url ${.dependencies.qwen3_aligner.url}

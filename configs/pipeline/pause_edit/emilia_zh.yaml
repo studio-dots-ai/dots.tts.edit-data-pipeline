@@ -1,0 +1,10 @@
+# @package _global_
+
+defaults:
+  - emilia_en
+  - _self_
+
+run_dir: ${artifact:worktree}/distributed_pipeline_runs/pause_edit/emilia_zh
+
+pipeline_config:
+  sample_language: zh

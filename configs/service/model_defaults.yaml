@@ -1,0 +1,11 @@
+defaults:
+  - /service/defaults@_here_
+  - _self_
+
+env:
+  CHECKPOINTS_DIR: ${oc.env:CHECKPOINTS_DIR}
+  HF_HOME: ${oc.env:CHECKPOINTS_DIR}
+  HF_HUB_CACHE: ${oc.env:CHECKPOINTS_DIR}
+  TRANSFORMERS_CACHE: ${oc.env:CHECKPOINTS_DIR}
+  TORCH_HOME: ${oc.env:CHECKPOINTS_DIR}/torch
+  HF_MODULES_CACHE: ${artifact:shared}/cache/hf_modules

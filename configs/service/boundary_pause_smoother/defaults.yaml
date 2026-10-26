@@ -1,0 +1,16 @@
+defaults:
+  - /service/defaults@_here_
+  - /service/f5_tts/defaults@dependencies.f5
+  - /service/aligner_gateway/qwen3@dependencies.aligner
+  - _self_
+
+config_key: boundary_pause_smoother/defaults
+port: 8018
+startup_timeout_sec: 300
+python_bin: envs/pipe-cpu/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/boundary-pause-smoother/api_service.py
+  --port ${.port}
+  --f5tts-url ${.dependencies.f5.url}
+  --aligner-url ${.dependencies.aligner.url}

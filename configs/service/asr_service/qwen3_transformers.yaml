@@ -1,0 +1,27 @@
+defaults:
+  - /service/model_defaults@_here_
+  - _self_
+
+config_key: asr_service/qwen3_transformers
+port: 8010
+health_path: /health
+startup_timeout_sec: 1800
+gpu_ids: "0"
+python_bin: envs/pipe-asr/.venv/bin/python
+params:
+  default_backend: qwen3-asr
+  model: Qwen/Qwen3-ASR-1.7B
+  device: cuda:0
+  dtype: bfloat16
+  max_new_tokens: 512
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/asr-service/asr_service.py
+  --port ${.port}
+  --default-backend ${.params.default_backend}
+  --qwen-transformers-model ${.params.model}
+  --qwen-transformers-device ${.params.device}
+  --qwen-transformers-dtype ${.params.dtype}
+  --qwen-transformers-max-new-tokens ${.params.max_new_tokens}
+  --buffer-batch-size 1
+  --buffer-wait-ms 0

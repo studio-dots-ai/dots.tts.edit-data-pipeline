@@ -1,0 +1,12 @@
+defaults:
+  - /service/model_defaults@_here_
+  - _self_
+
+config_key: ted_tts/defaults
+port: 8035
+gpu_ids: "0"
+python_bin: envs/pipe-indextts/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/ted-tts/api_service.py
+  --port ${.port}

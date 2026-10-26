@@ -1,0 +1,15 @@
+defaults:
+  - /service/model_defaults@_here_
+  - _self_
+
+config_key: index_tts/defaults
+port: 8002
+gpu_ids: "0"
+python_bin: envs/pipe-indextts/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/index-tts/api_service.py
+  --port ${.port}
+  --accel
+  --torch-compile
+  --cuda-kernel

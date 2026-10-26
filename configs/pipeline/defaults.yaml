@@ -1,0 +1,12 @@
+# @package _global_
+defaults:
+  - /source/emilia.yaml@_global_
+  - _self_
+
+run_dir: ${artifact:worktree}/distributed_pipeline_runs/default_run_name
+
+runtime:
+  run_dir: ${run_dir}
+  service_log_root: ${runtime.run_dir}/logs
+  artifact_cleanup:
+    enabled: true

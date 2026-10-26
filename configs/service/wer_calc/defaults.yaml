@@ -1,0 +1,11 @@
+defaults:
+  - /service/defaults@_here_
+  - _self_
+
+config_key: wer_calc/defaults
+port: 8011
+python_bin: envs/pipe-cpu/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/wer_calc/api_service.py
+  --port ${.port}

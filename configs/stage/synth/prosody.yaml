@@ -1,0 +1,7 @@
+defaults:
+  - /stage/synth/defaults@_here_
+  - /service/aligner_gateway/qwen3@services.aligner
+  - /service/pitch_conversion/defaults@services.pitch
+  - /service/speech_rate_conversion/defaults@services.rate
+  - /service/f5_tts/defaults@services.f5
+  - _self_

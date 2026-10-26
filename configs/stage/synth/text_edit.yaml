@@ -1,0 +1,5 @@
+defaults:
+  - /stage/synth/defaults@_here_
+  - /service/f5_tts/defaults@services.f5
+  - /service/aligner_gateway/qwen3@services.aligner
+  - _self_

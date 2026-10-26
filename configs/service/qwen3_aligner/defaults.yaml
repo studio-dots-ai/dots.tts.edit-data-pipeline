@@ -1,0 +1,17 @@
+defaults:
+  - /service/model_defaults@_here_
+  - _self_
+
+config_key: qwen3_aligner/defaults
+port: 18009
+gpu_ids: "0"
+params:
+  model: $CHECKPOINTS_DIR/Qwen3-ForcedAligner-0.6B
+  device_map: cuda:0
+python_bin: envs/pipe-asr/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/qwen3-asr/forced_alignment_service.py
+  --port ${.port}
+  --model ${.params.model}
+  --device-map ${.params.device_map}

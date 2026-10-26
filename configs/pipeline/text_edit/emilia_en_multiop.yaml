@@ -1,0 +1,27 @@
+# @package _global_
+
+defaults:
+  - /pipeline/text_edit/defaults
+  - _self_
+
+run_dir: ${artifact:worktree}/distributed_pipeline_runs/text_edit/emilia_en_multiop
+
+pipeline_config:
+  sample_language: en
+  span_level_weights: {word: 2.0, phrase: 4.0, clause: 1.0, sentence: 0.0, arbitrary: 4.0}
+  op_count_weights: {1: 0.0, 2: 2.0, 3: 8.0}
+
+stages:
+  sample:
+    max_workers: 16
+  plan:
+    max_workers: 256
+
+  synth:
+    max_workers: 128
+
+  eval:
+    max_workers: 96
+
+  save:
+    max_workers: 24

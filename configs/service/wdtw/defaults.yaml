@@ -1,0 +1,19 @@
+defaults:
+  - /service/defaults@_here_
+  - /service/aligner_gateway/qwen3@dependencies.aligner
+  - /service/f0_eval/defaults@dependencies.f0
+  - _self_
+
+config_key: wdtw/defaults
+port: 8032
+gpu_ids: "0"
+python_bin: envs/pipe-gpu/.venv/bin/python
+params:
+  aligner_backend: qwen3
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/wdtw/api_service.py
+  --port ${.port}
+  --aligner-url ${.dependencies.aligner.url}
+  --aligner-backend ${.params.aligner_backend}
+  --f0-url ${.dependencies.f0.url}

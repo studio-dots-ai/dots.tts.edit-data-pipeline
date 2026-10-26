@@ -1,0 +1,28 @@
+defaults:
+  - /service/defaults@_here_
+  - /service/aligner_gateway/qwen3@dependencies.aligner
+  - /service/pitch_conversion/defaults@dependencies.pitch
+  - /service/speech_rate_conversion/defaults@dependencies.rate
+  - /service/f5_tts/defaults@dependencies.f5
+  - _self_
+
+config_key: prosody_edit_pipeline/defaults
+port: 8036
+gpu_ids: "0"
+python_bin: envs/pipe-gpu/.venv/bin/python
+params:
+  pipeline: {}
+  pipeline_defaults: pipeline/prosody_edit/defaults
+  evaluation_args: ""
+  output_dir: ${artifact:worktree}/prosody_edit_service
+command: >-
+  ${shell_quote:${.python_bin}} -m speech_edit.pipelines.prosody.service.api_service
+  --port ${.port}
+  --pipeline-defaults ${shell_quote:${.params.pipeline_defaults}}
+  --pipeline-parameters ${shell_quote:${json:${.params.pipeline}}}
+  --aligner-url ${.dependencies.aligner.url}
+  --pitch-url ${.dependencies.pitch.url}
+  --rate-url ${.dependencies.rate.url}
+  --f5-url ${.dependencies.f5.url}
+  --output-dir ${shell_quote:${.params.output_dir}}
+  ${.params.evaluation_args}

@@ -1,0 +1,12 @@
+scheme: http
+port: 99999
+instance_key: ${.config_key}:${.port}
+host: 127.0.0.1
+url: http://${.host}:${.port}
+health_path: /health
+health_url: ${.url}${.health_path}
+startup_timeout_sec: 900
+env:
+  HF_HUB_OFFLINE: "1"
+  TRANSFORMERS_OFFLINE: "1"
+gpu_ids: ""

@@ -1,0 +1,9 @@
+defaults:
+  - /stage/eval/defaults@_here_
+  - /service/asr_service/qwen3@services.asr
+  - /service/aligner_gateway/qwen3@services.aligner
+  - /service/wer_calc/defaults@services.wer
+  - /service/utmos/defaults@services.utmos
+  - /service/spk_sim_eval/defaults@services.spk_sim
+  - /service/wdtw/defaults@services.wdtw
+  - _self_

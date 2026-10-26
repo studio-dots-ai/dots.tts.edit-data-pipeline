@@ -1,0 +1,16 @@
+defaults:
+  - /service/defaults@_here_
+  - /service/aligner_gateway/qwen3@dependencies.aligner
+  - /service/boundary_pause_smoother/defaults@dependencies.smoother
+  - _self_
+
+config_key: audio_assembly/defaults
+port: 8021
+startup_timeout_sec: 300
+python_bin: envs/pipe-cpu/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/audio-assembly/api_service.py
+  --port ${.port}
+  --aligner-url ${.dependencies.aligner.url}
+  --smoother-url ${.dependencies.smoother.url}

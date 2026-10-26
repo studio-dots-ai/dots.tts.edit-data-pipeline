@@ -1,0 +1,81 @@
+# @package _global_
+
+defaults:
+  - /pipeline/defaults@_global_
+  - /stage/sample/defaults@_global_.stages.sample
+  - /stage/plan/gemma4_mtp_tp2@_global_.stages.plan
+  - /stage/synth/prosody@_global_.stages.synth
+  - /stage/eval/prosody@_global_.stages.eval
+  - /stage/save/parquet@_global_.stages.save
+  - _self_
+
+pipeline: prosody_edit
+adapter_class: speech_edit.pipelines.prosody.stage_adapter:ProsodyStageAdapter
+run_dir: ${artifact:worktree}/distributed_pipeline_runs/prosody_edit/defaults
+
+source:
+  rows_per_item: 128
+
+queues:
+  source_items: {max_size: 4096}
+  prosody.sample_to_plan: {max_size: 4096}
+  prosody.plan_to_synth: {max_size: 16384}
+  prosody.synth_to_eval: {max_size: 8192}
+  prosody.eval_to_save: {max_size: 8192}
+
+topology:
+  bindings:
+    source_items:
+      consumers: [sample]
+    prosody.sample_to_plan:
+      producers: [sample]
+      consumers: [plan]
+    prosody.plan_to_synth:
+      producers: [plan]
+      consumers: [synth]
+    prosody.synth_to_eval:
+      producers: [synth]
+      consumers: [eval]
+    prosody.eval_to_save:
+      producers: [eval]
+      consumers: [save]
+
+pipeline_config:
+  seed: 42
+  num_waves: 3
+  edit_kind_weights: {pitch: 1.0, rate: 1.0, mixed: 1.0}
+  span_level_weights: {single_word: 3.0, short_phrase: 3.0, clause: 2.0, sentence: 1.0}
+  parameter_policy:
+    values_per_wave: 3
+    pitch:
+      buckets:
+        normal_down: {weight: 0.225, values: [-6, -5, -4, -3, -2]}
+        normal_up: {weight: 0.225, values: [2, 3, 4, 5, 6]}
+        near_neutral: {weight: 0.05, values: [-1, 1]}
+        wide_down: {weight: 0.25, values: [-9, -8, -7]}
+        wide_up: {weight: 0.25, values: [7, 8, 9]}
+    rate:
+      decimals: 2
+      buckets:
+        normal_slow: {weight: 0.15, ranges: [[0.75, 0.99]]}
+        normal_fast: {weight: 0.15, ranges: [[1.01, 1.33]]}
+        wide_slow: {weight: 0.35, ranges: [[0.50, 0.74]]}
+        wide_fast: {weight: 0.35, ranges: [[1.34, 2.00]]}
+  forward_nl_mode: template
+  reverse_nl_mode: template
+  sample_language: null
+  aligner_backend: qwen3
+  pitch_method: psola+indextts2_cco
+  psola_indextts2_cco_pitch_boost: mul:1.6
+  smooth_policy: auto
+  crossfade_ms: 40.0
+  smooth_margin_sec: 0.1
+  output_dataset_name: Emilia-ProsodyEdit-V1
+  rate_method: wsola+indextts2
+  evaluate: true
+  llm_temperature: 0.8
+  llm_max_retries: 3
+  f5_steps: 32
+  f5_seed: null
+  f5_source_crossfade_sec: 0.0
+  f5_regen_crossfade_sec: 0.01

@@ -1,0 +1,5 @@
+defaults:
+  - /stage/synth/defaults@_here_
+  - /service/aligner_gateway/qwen3@services.aligner
+  - /service/boundary_pause_smoother/defaults@services.boundary_pause_smoother
+  - _self_

@@ -1,0 +1,83 @@
+# @package _global_
+
+defaults:
+  - /pipeline/defaults@_global_
+  - /stage/sample/defaults@_global_.stages.sample
+  - /stage/plan/gemma4_mtp_tp2@_global_.stages.plan
+  - /stage/synth/text_edit@_global_.stages.synth
+  - /stage/eval/text_edit@_global_.stages.eval
+  - /stage/save/parquet@_global_.stages.save
+  - _self_
+
+pipeline: text_edit
+adapter_class: speech_edit.pipelines.text.stage_adapter:TextEditStageAdapter
+run_dir: ${artifact:worktree}/distributed_pipeline_runs/text_edit/defaults
+
+queues:
+  source_items: {max_size: 4096}
+  text.sample_to_plan: {max_size: 4096}
+  text.plan_to_synth: {max_size: 8192}
+  text.synth_to_eval: {max_size: 4096}
+  text.eval_to_save: {max_size: 4096}
+
+topology:
+  bindings:
+    source_items:
+      consumers: [sample]
+    text.sample_to_plan:
+      producers: [sample]
+      consumers: [plan]
+    text.plan_to_synth:
+      producers: [plan]
+      consumers: [synth]
+    text.synth_to_eval:
+      producers: [synth]
+      consumers: [eval]
+    text.eval_to_save:
+      producers: [eval]
+      consumers: [save]
+
+pipeline_config:
+  seed: 42
+  num_generations: 3
+  span_level_weights:
+    word: 2.0
+    phrase: 3.0
+    clause: 2.0
+    sentence: 1.0
+    arbitrary: 2.0
+  op_count_weights:
+    1: 2.0
+    2: 3.0
+    3: 5.0
+  require_del_ins_prob: 0.3
+  min_edit_distance_pct: null
+  min_preserved_source_ratio: null
+  sample_language: null
+  min_duration: 2.0
+  max_duration: 25.0
+  shuffle_source_rows: true
+  forward_nl_mode: template
+  reverse_nl_mode: template
+  aligner_backend: qwen3
+  output_dataset_name: Emilia-TextEdit-V1
+  duration_mode: estimate
+  expand_radius: 0.4
+  merge_gap: 0.1
+  llm_temperature: 0.7
+  llm_max_tokens: 4096
+  llm_max_retries: 3
+  f5_steps: 32
+  f5_cfg_strength: 2.0
+  f5_sway_sampling_coef: -1.0
+  source_crossfade_sec: 0.02
+  regen_crossfade_sec: 0.0
+  prepend_context_enabled: true
+  fail_if_cannot_prepend_context: false
+  min_unmasked_context_sec: 3.0
+  min_unmasked_context_ratio: 0.1
+  max_f5_edit_seconds: 30.0
+  synthesis_mode: one_shot
+  debug: false
+  debug_output_dir: null
+  evaluate: true

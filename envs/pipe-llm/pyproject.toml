@@ -1,0 +1,41 @@
+[project]
+name = "pipe-llm"
+version = "0.1.0"
+description = "LLM service environment — vLLM 0.19.0 + Gemini API backend for text generation"
+requires-python = ">=3.10,<3.12"
+
+dependencies = [
+    # ── vLLM (Gemma 4 support requires >=0.19.0) ───────────────────
+    "vllm[audio]==0.19.0",
+
+    # ── Web framework ─────────────────────────────────────────────
+    "fastapi>=0.127,<1.0",
+    "uvicorn>=0.38,<1.0",
+    "pydantic>=2.12",
+    "requests>=2.31,<3.0",
+
+    # ── Gemini API backend ─────────────────────────────────────────
+    "google-generativeai>=0.8",
+
+    # ── transformers (newer than vLLM's bundled version for qwen3_5/gemma4 support) ──
+    "transformers>=5.5.0",
+    "accelerate>=1.0",
+
+    # ── Utilities ──────────────────────────────────────────────────
+    "PyYAML>=6.0",
+    "loguru>=0.7",
+    "pytest>=9.0",
+
+    # ── Database ───────────────────────────────────────────────────
+    "psycopg[binary]>=3.2,<4",
+    "psycopg-pool>=3.2,<4",
+]
+
+[tool.uv]
+index-url = "https://pypi.org/simple"
+
+# vLLM 0.19.0 works with transformers 5.x; keep an explicit override so the
+# environment consistently exposes qwen3_5 and gemma4 tokenizer/config support.
+override-dependencies = [
+    "transformers>=5.5.0",
+]

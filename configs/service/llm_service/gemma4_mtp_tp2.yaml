@@ -1,0 +1,34 @@
+defaults:
+  - /service/model_defaults@_here_
+  - _self_
+
+config_key: llm_service/gemma4_mtp_tp2
+port: 8012
+startup_timeout_sec: 1200
+gpu_ids: "0,1"
+params:
+  model_path: /path/to/models/gemma4
+  draft_model_path: /path/to/models/gemma4-mtp
+  max_model_len: 8192
+  max_num_seqs: 8
+  max_num_batched_tokens: 32768
+  gpu_memory_utilization: 0.92
+python_bin: envs/pipe-llm/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/llm-service/api_service.py
+  --port ${.port}
+  --default-backend gemma4_mtp
+  --gemma4-mtp-model-path ${shell_quote:${.params.model_path}}
+  --gemma4-mtp-draft-model-path ${shell_quote:${.params.draft_model_path}}
+  --gemma4-mtp-vllm-python ${shell_quote:${.python_bin}}
+  --gemma4-mtp-gpus auto
+  --gemma4-mtp-launch-timeout 1200
+  --gemma4-mtp-max-model-len ${.params.max_model_len}
+  --gemma4-mtp-max-num-batched-tokens ${.params.max_num_batched_tokens}
+  --gemma4-mtp-max-num-seqs ${.params.max_num_seqs}
+  --gemma4-mtp-gpu-memory-utilization ${.params.gpu_memory_utilization}
+  --gemma4-mtp-tensor-parallel-size 2
+  --gemma4-mtp-data-parallel-size 1
+  --gemma4-mtp-data-parallel-size-local 1
+  --gemma4-mtp-log-dir ${shell_quote:${runtime.service_log_root}/llm_gemma_mtp}

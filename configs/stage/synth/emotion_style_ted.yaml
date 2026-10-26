@@ -1,0 +1,43 @@
+defaults:
+  - /stage/synth/defaults@_here_
+  - /service/ted_tts/defaults@services.ted_tts
+  - /service/aligner_gateway/qwen3@services.aligner
+  - /service/boundary_pause_smoother/defaults@services.boundary_pause_smoother
+  - /service/audio_assembly/defaults@services.audio_assembly
+  - _self_
+
+num_clients_per_worker: 3
+
+
+services:
+  ted_tts:
+    startup_timeout_sec: 1800
+  aligner:
+    dependencies:
+      qwen3_aligner:
+        gpu_ids: "1"
+  boundary_pause_smoother:
+    dependencies:
+      f5:
+        gpu_ids: "1"
+      aligner:
+        dependencies:
+          qwen3_aligner:
+            gpu_ids: "1"
+  audio_assembly:
+    dependencies:
+      aligner:
+        dependencies:
+          qwen3_aligner:
+            gpu_ids: "1"
+      smoother:
+        dependencies:
+          f5:
+            gpu_ids: "1"
+          aligner:
+            dependencies:
+              qwen3_aligner:
+                gpu_ids: "1"
+
+pipeline_config:
+  synthesis_backend_filter: ted

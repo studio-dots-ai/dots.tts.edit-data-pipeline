@@ -1,0 +1,7 @@
+defaults:
+  - /stage/defaults@_here_
+  - /service/llm_service/gemini_2_5pro@services.llm
+  - _self_
+
+max_workers: 16
+lease_seconds: 3600

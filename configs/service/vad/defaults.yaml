@@ -1,0 +1,9 @@
+defaults:
+  - /service/defaults@_here_
+  - _self_
+
+config_key: vad/defaults
+port: 8005
+python_bin: envs/pipe-cpu/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}} tools/vad-service/api_service.py --port ${.port}

@@ -1,0 +1,26 @@
+# @package _global_
+
+defaults:
+  - /pipeline/prosody_edit/defaults
+  - _self_
+
+run_dir: ${artifact:worktree}/distributed_pipeline_runs/prosody_edit/emilia_en
+
+pipeline_config:
+  sample_language: en
+  output_dataset_name: Emilia-ProsodyEdit-EN-V1
+
+stages:
+  sample:
+    max_workers: 8
+  plan:
+    max_workers: 16
+
+  synth:
+    max_workers: 32
+
+  eval:
+    max_workers: 32
+
+  save:
+    max_workers: 16

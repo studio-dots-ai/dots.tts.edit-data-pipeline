@@ -1,0 +1,40 @@
+defaults:
+  - /service/model_defaults@_here_
+  - _self_
+
+config_key: qwen3_asr/defaults
+port: 8033
+health_path: /health
+startup_timeout_sec: 1200
+gpu_ids: "0"
+python_bin: envs/pipe-asr/.venv/bin/python
+params:
+  model: Qwen/Qwen3-ASR-1.7B
+  gpu_memory_utilization: 0.4
+env:
+  PYTHONPATH: tools/qwen3-asr:.
+command: >-
+  /bin/bash -lc '
+  set -Eeuo pipefail;
+  service_port="$(printf "%s\n" "$2" | sed "s/.*://")";
+  case "$service_port" in ""|*[!0-9]*) echo "invalid Qwen3-ASR service URL: $2" >&2; exit 2;; esac;
+  export VLLM_PORT="$((service_port + 20000))";
+  echo "Qwen3-ASR vLLM internal port base: $VLLM_PORT";
+  mkdir -p "$1";
+  cache_root="$(mktemp -d "$1/run-XXXXXXXX")";
+  export XDG_CACHE_HOME="$cache_root/xdg";
+  export VLLM_CACHE_ROOT="$cache_root/vllm";
+  export TORCHINDUCTOR_CACHE_DIR="$cache_root/torchinductor";
+  mkdir -p "$XDG_CACHE_HOME" "$VLLM_CACHE_ROOT" "$TORCHINDUCTOR_CACHE_DIR";
+  cleanup() { rm -rf "$cache_root"; };
+  trap cleanup EXIT;
+  "$3"
+  -m qwen3_asr_service.serve
+  ${.params.model}
+  --gpu-memory-utilization ${.params.gpu_memory_utilization}
+  --host 0.0.0.0
+  --port ${.port}
+  ' qwen3-asr
+  ${shell_quote:${artifact:worktree}/cache/qwen3_asr}
+  ${shell_quote:${.url}}
+  ${shell_quote:${.python_bin}}

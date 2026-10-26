@@ -1,0 +1,12 @@
+defaults:
+  - /service/model_defaults@_here_
+  - _self_
+
+config_key: spk_sim_eval/defaults
+port: 8019
+gpu_ids: "0"
+python_bin: envs/pipe-gpu/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/spk-sim-eval/api_service.py
+  --port ${.port}

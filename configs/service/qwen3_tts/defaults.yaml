@@ -1,0 +1,16 @@
+defaults:
+  - /service/model_defaults@_here_
+  - _self_
+
+config_key: qwen3_tts/defaults
+port: 8007
+gpu_ids: "0"
+env:
+  PYTHONPATH: tools/qwen3-tts:.
+python_bin: envs/pipe-gpu/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  -m qwen3_tts_service.api_service
+  --port ${.port}
+  --no-custom-voice
+  --no-base

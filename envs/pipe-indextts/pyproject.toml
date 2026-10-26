@@ -1,0 +1,71 @@
+[project]
+name = "pipe-indextts"
+version = "0.1.0"
+description = "IndexTTS2 environment — requires transformers 4.52.x (patched GPT2 internals)"
+requires-python = ">=3.10,<3.11"
+
+dependencies = [
+    # ── PyTorch (CUDA 12.8) ────────────────────────────────────────
+    "torch==2.8.*",
+    "torchaudio==2.8.*",
+
+    # ── Core scientific ────────────────────────────────────────────
+    "numpy==1.26.4",
+    "scipy>=1.13,<1.17",
+    "librosa>=0.10.2,<0.12",
+    "soundfile>=0.12,<0.14",
+    "pydub>=0.25",
+    "soxr>=1.0",
+
+    # ── Web framework ─────────────────────────────────────────────
+    "fastapi>=0.127,<1.0",
+    "uvicorn>=0.38,<1.0",
+    "pydantic>=2.7,<=2.10.6",
+    "requests>=2.31,<3.0",
+
+    # ── Common utilities ──────────────────────────────────────────
+    "tqdm>=4.65",
+    "PyYAML>=6.0",
+    "setuptools>=70,<81",
+    "pytest>=9.0",
+    "httpx>=0.28,<0.29",
+
+    # ── Database ───────────────────────────────────────────────────
+    "psycopg[binary]>=3.2,<4",
+    "psycopg-pool>=3.2,<4",
+
+    # ── Inference acceleration ───────────────────────────────────
+    "deepspeed==0.17.1",
+
+    # ── Local package ──────────────────────────────────────────────
+    "indextts",
+
+    # ── Flash attention (pre-built wheel via URL source) ──────────
+    "flash-attn @ https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiTRUE-cp310-cp310-linux_x86_64.whl",
+]
+
+[tool.uv]
+index-url = "https://pypi.org/simple"
+
+# IndexTTS pins numpy==1.26.2 — we prefer 1.26.4 for consistency
+override-dependencies = [
+    "numpy==1.26.4",
+]
+
+# DeepSpeed must build within our .venv to find CUDA-enabled torch
+no-build-isolation-package = ["deepspeed"]
+
+[tool.uv.sources]
+flash-attn = { url = "https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiTRUE-cp310-cp310-linux_x86_64.whl" }
+torch = [
+    { index = "pytorch-cuda", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchaudio = [
+    { index = "pytorch-cuda", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+indextts = { path = "../../tools/index-tts/upstream", editable = true }
+
+[[tool.uv.index]]
+name = "pytorch-cuda"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true

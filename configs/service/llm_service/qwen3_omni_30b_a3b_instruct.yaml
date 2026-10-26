@@ -1,0 +1,25 @@
+defaults:
+  - /service/model_defaults@_here_
+  - _self_
+
+config_key: llm_service/qwen3_omni_30b_a3b_instruct
+port: 8012
+startup_timeout_sec: 1800
+gpu_ids: "0,1"
+python_bin: envs/pipe-llm/.venv/bin/python
+params:
+  model: qwen3-omni-30b-a3b-instruct
+  max_model_len: 8192
+  max_num_seqs: 4
+  gpu_memory_utilization: 0.90
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/llm-service/api_service.py
+  --port ${.port}
+  --default-backend local
+  --local-model ${.params.model}
+  --tensor-parallel-size 2
+  --max-model-len ${.params.max_model_len}
+  --max-num-seqs ${.params.max_num_seqs}
+  --gpu-memory-utilization ${.params.gpu_memory_utilization}
+  --enforce-eager

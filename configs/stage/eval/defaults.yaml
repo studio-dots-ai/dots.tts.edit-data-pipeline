@@ -1,0 +1,11 @@
+# @package _global_
+
+defaults:
+  - /stage/defaults@_here_
+  - _self_
+
+max_workers: 16
+
+lease_seconds: 3600
+
+port_stride: 100

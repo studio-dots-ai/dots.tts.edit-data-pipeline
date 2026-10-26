@@ -1,0 +1,13 @@
+defaults:
+  - /stage/defaults@_here_
+  - _self_
+
+max_workers: 4
+lease_seconds: 1200
+parquet_output:
+  enabled: true
+  output_dir: ${runtime.run_dir}/parquet
+  dataset_name: ${pipeline_config.output_dataset_name}
+  flush_rows: 256
+  flush_bytes_mb: 256
+  flush_interval_sec: 600

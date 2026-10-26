@@ -1,0 +1,12 @@
+defaults:
+  - /service/model_defaults@_here_
+  - _self_
+
+config_key: utmos/defaults
+port: 8017
+gpu_ids: "0"
+python_bin: envs/pipe-gpu/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/utmos/api_service.py
+  --port ${.port}

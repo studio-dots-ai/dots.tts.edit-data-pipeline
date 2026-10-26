@@ -1,0 +1,18 @@
+[submodule "tools/qwen3-tts/upstream"]
+	path = tools/qwen3-tts/upstream
+	url = https://github.com/QwenLM/Qwen3-TTS.git
+[submodule "tools/seed-vc/upstream"]
+	path = tools/seed-vc/upstream
+	url = https://github.com/Plachtaa/seed-vc.git
+[submodule "tools/qwen3-asr/upstream"]
+	path = tools/qwen3-asr/upstream
+	url = https://github.com/QwenLM/Qwen3-ASR.git
+[submodule "tools/f5-tts/upstream"]
+	path = tools/f5-tts/upstream
+	url = https://github.com/SWivid/F5-TTS.git
+[submodule "tools/index-tts/upstream"]
+	path = tools/index-tts/upstream
+	url = https://github.com/index-tts/index-tts.git
+[submodule "tools/ted-tts/upstream"]
+	path = tools/ted-tts/upstream
+	url = https://github.com/Simon-leong/TED-TTS.git

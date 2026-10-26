@@ -1,0 +1,15 @@
+defaults:
+  - /service/defaults@_here_
+  - /service/qwen3_tts/defaults@dependencies.qwen3_tts
+  - /service/index_tts/defaults@dependencies.index_tts
+  - _self_
+
+config_key: pitch_conversion/defaults
+port: 8027
+python_bin: envs/pipe-cpu/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  -m tools.pitch_conversion.api_service
+  --port ${.port}
+  --qwen3tts-url ${.dependencies.qwen3_tts.url}
+  --indextts-url ${.dependencies.index_tts.url}

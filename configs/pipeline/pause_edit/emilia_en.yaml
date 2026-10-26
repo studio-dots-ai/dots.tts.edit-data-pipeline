@@ -1,0 +1,14 @@
+# @package _global_
+
+defaults:
+  - /pipeline/pause_edit/defaults
+  - _self_
+
+run_dir: ${artifact:worktree}/distributed_pipeline_runs/pause_edit/emilia_en
+
+source:
+  rows_per_item: 128
+
+pipeline_config:
+  sample_language: en
+  output_dataset_name: Emilia-PauseEdit-V2

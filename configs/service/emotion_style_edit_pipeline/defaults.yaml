@@ -1,0 +1,31 @@
+defaults:
+  - /service/defaults@_here_
+  - /service/index_tts/defaults@dependencies.indextts
+  - /service/ted_tts/defaults@dependencies.ted_tts
+  - /service/aligner_gateway/qwen3@dependencies.aligner
+  - /service/boundary_pause_smoother/defaults@dependencies.smoother
+  - /service/audio_assembly/defaults@dependencies.assembly
+  - _self_
+
+config_key: emotion_style_edit_pipeline/defaults
+port: 8039
+gpu_ids: "0"
+python_bin: envs/pipe-gpu/.venv/bin/python
+params:
+  pipeline_defaults: pipeline/emotion_style_edit/defaults
+  pipeline:
+    max_candidates: 3
+  evaluation_args: ""
+  output_dir: ${artifact:worktree}/emotion_edit_service
+command: >-
+  ${shell_quote:${.python_bin}} -m speech_edit.pipelines.emotion.service.api_service
+  --port ${.port}
+  --pipeline-defaults ${shell_quote:${.params.pipeline_defaults}}
+  --pipeline-parameters ${shell_quote:${json:${.params.pipeline}}}
+  --indextts-url ${.dependencies.indextts.url}
+  --ted-tts-url ${.dependencies.ted_tts.url}
+  --aligner-url ${.dependencies.aligner.url}
+  --smoother-url ${.dependencies.smoother.url}
+  --assembly-url ${.dependencies.assembly.url}
+  --output-dir ${shell_quote:${.params.output_dir}}
+  ${.params.evaluation_args}

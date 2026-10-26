@@ -1,0 +1,13 @@
+# Interpreter caches and optional explicit environment installs
+__pycache__/
+*.py[cod]
+/envs/*/.venv
+
+# Local input data and model aliases
+/checkpoints
+/Datasets
+
+# Local credentials
+.env
+.env.*
+!.env.example

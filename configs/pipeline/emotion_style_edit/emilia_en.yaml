@@ -1,0 +1,44 @@
+# @package _global_
+
+defaults:
+  - /pipeline/emotion_style_edit/defaults
+  - _self_
+
+run_dir: ${artifact:worktree}/distributed_pipeline_runs/emotion_style_edit/emilia_en_v2
+
+pipeline_config:
+  sample_language: en
+  output_dataset_name: Emilia-EmotionStyleEdit-EN-V2
+  speaker_parquet_sources:
+    - /path/to/speakers/en/parquet_files.list
+  strict_emotion_plan: true
+  emotion_edit_mode_probs:
+    type_level: {type_change: 1.0, intensity_change: 0.0}
+    desc: {type_change: 1.0, intensity_change: 0.0}
+  emotion_tag_weights:
+    happy: 0.15
+    angry: 0.15
+    sad: 0.15
+    afraid: 0.15
+    disgusted: 0.05
+    melancholic: 0.15
+    surprised: 0.15
+    calm: 0.05
+
+stages:
+  sample:
+    max_workers: 1
+  plan:
+    max_workers: 4
+
+  synth_index:
+    max_workers: 32
+
+  synth_ted:
+    max_workers: 16
+
+  eval:
+    max_workers: 8
+
+  save:
+    max_workers: 3

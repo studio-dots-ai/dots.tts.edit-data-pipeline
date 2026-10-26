@@ -1,0 +1,29 @@
+defaults:
+  - defaults
+  - /service/asr_service/qwen3@dependencies.asr
+  - /service/utmos/defaults@dependencies.utmos
+  - /service/spk_sim_eval/defaults@dependencies.spk_sim
+  - /service/wdtw/defaults@dependencies.wdtw
+  - /service/wer_calc/defaults@dependencies.wer
+  - /service/f0_eval/defaults@dependencies.f0
+  - _self_
+
+params:
+  evaluation_args: >-
+    --init-evaluate-services
+    --asr-url ${..dependencies.asr.url}
+    --utmos-url ${..dependencies.utmos.url}
+    --spk-sim-url ${..dependencies.spk_sim.url}
+    --wdtw-url ${..dependencies.wdtw.url}
+    --wer-url ${..dependencies.wer.url}
+    --f0-url ${..dependencies.f0.url}
+
+dependencies:
+  asr:
+    dependencies:
+      qwen3_asr:
+        gpu_ids: "1"
+  utmos:
+    gpu_ids: "1"
+  spk_sim:
+    gpu_ids: "1"

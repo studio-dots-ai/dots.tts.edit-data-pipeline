@@ -1,0 +1,25 @@
+defaults:
+  - /service/defaults@_here_
+  - /service/aligner_gateway/qwen3@dependencies.aligner
+  - /service/boundary_pause_smoother/defaults@dependencies.smoother
+  - _self_
+
+config_key: pause_edit_pipeline/defaults
+port: 8037
+gpu_ids: "0"
+python_bin: envs/pipe-gpu/.venv/bin/python
+params:
+  pipeline_defaults: pipeline/pause_edit/defaults
+  pipeline:
+    center_regen_second_pass: false
+  evaluation_args: ""
+  output_dir: ${artifact:worktree}/pause_edit_service
+command: >-
+  ${shell_quote:${.python_bin}} -m speech_edit.pipelines.pause.service.api_service
+  --port ${.port}
+  --pipeline-defaults ${shell_quote:${.params.pipeline_defaults}}
+  --pipeline-parameters ${shell_quote:${json:${.params.pipeline}}}
+  --aligner-url ${.dependencies.aligner.url}
+  --smoother-url ${.dependencies.smoother.url}
+  --output-dir ${shell_quote:${.params.output_dir}}
+  ${.params.evaluation_args}

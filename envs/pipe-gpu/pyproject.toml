@@ -1,0 +1,101 @@
+[project]
+name = "pipe-gpu"
+version = "0.1.0"
+description = "Unified GPU environment for speech editing data pipeline — consolidates f5-tts, seed-vc, qwen3-tts, qwen3-asr(HF), vad, vocos"
+requires-python = ">=3.10,<3.11"
+
+dependencies = [
+    # ── PyTorch (CUDA 12.8) ────────────────────────────────────────
+    "torch==2.8.*",
+    "torchaudio==2.8.*",
+    "torchvision>=0.20",
+    # ── Core ML ────────────────────────────────────────────────────
+    "transformers>=4.57,<=4.57.6",
+    "accelerate>=1.8,<=1.12.0",
+    "safetensors>=0.5",
+    "tokenizers>=0.21",
+    "datasets>=4.0",
+    "einops>=0.7",
+    "sentencepiece>=0.2.1",
+    # ── Core scientific ────────────────────────────────────────────
+    "numpy==1.26.4",
+    "scipy>=1.13,<1.17",
+    "librosa>=0.10.2,<0.12",
+    "soundfile>=0.12,<0.14",
+    "pydub>=0.25",
+    "soxr>=1.0",
+    "sox>=1.4",
+    "praat-parselmouth>=0.4.5",
+    # ── Web framework ─────────────────────────────────────────────
+    "fastapi>=0.127,<1.0",
+    "uvicorn>=0.38,<1.0",
+    "pydantic>=2.7,<=2.10.6",
+    "requests>=2.31,<3.0",
+    # ── SeedVC (path dep — see [tool.uv.sources]) ─────────────────
+    "seed-vc",
+    # ── Common utilities ──────────────────────────────────────────
+    "tqdm>=4.65",
+    "pyarrow>=18.0",
+    "pandas>=2.0",
+    "psycopg[binary]>=3.2,<4",
+    "psycopg-pool>=3.2,<4",
+    "matplotlib>=3.7",
+    "PyYAML>=6.0",
+    "hydra-core==1.3.2",
+    "numba>=0.58",
+    "setuptools>=70,<81",
+    "jiwer>=4.0",
+    "sounddevice>=0.5",
+    "loguru>=0.7",
+    "omegaconf>=2.3",
+    "pytest>=9.0",
+    "httpx>=0.27",
+    "langcodes[data]>=3.5",
+    "lingua-language-detector>=2.1",
+    "WeTextProcessing>=1.0",
+    # ── Local packages (editable path deps — see [tool.uv.sources]) ───
+    "f5-tts",
+    "qwen-tts",
+    "qwen-asr",
+]
+
+[tool.uv]
+index-url = "https://pypi.org/simple"
+
+# Override conflicting version pins from local packages' own pyproject.toml.
+# Each local package pins its preferred versions, but when installed together
+# in one env, some pins conflict. Overrides force a unified resolution.
+override-dependencies = [
+    # qwen3-tts pins ==4.57.3, qwen3-asr pins ==4.57.6
+    "transformers>=4.57.3,<=4.57.6",
+    # Shared dataset tooling version
+    "datasets>=4.0",
+    # Shared model tooling version
+    "modelscope>=1.20",
+    # Shared API schema version
+    "pydantic>=2.7,<=2.10.6",
+    # f5-tts pins <=1.26.4 (conditional), keep our pin
+    "numpy==1.26.4",
+]
+
+[tool.uv.sources]
+# Route PyTorch packages to CUDA 12.8 index
+torch = [
+    { index = "pytorch-cuda", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchaudio = [
+    { index = "pytorch-cuda", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchvision = [
+    { index = "pytorch-cuda", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+# Local packages (editable installs from tools/ submodules)
+f5-tts = { path = "../../tools/f5-tts/upstream", editable = true }
+qwen-tts = { path = "../../tools/qwen3-tts/upstream", editable = true }
+qwen-asr = { path = "../../tools/qwen3-asr/upstream", editable = true }
+seed-vc = { path = "../../tools/seed-vc", editable = true }
+
+[[tool.uv.index]]
+name = "pytorch-cuda"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true

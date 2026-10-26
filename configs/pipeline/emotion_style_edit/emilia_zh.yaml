@@ -1,0 +1,13 @@
+# @package _global_
+
+defaults:
+  - emilia_en
+  - _self_
+
+run_dir: ${artifact:worktree}/distributed_pipeline_runs/emotion_style_edit/emilia_zh_v2
+
+pipeline_config:
+  sample_language: zh
+  output_dataset_name: Emilia-EmotionStyleEdit-ZH-V2
+  speaker_parquet_sources:
+    - /path/to/speakers/zh/parquet_files.list

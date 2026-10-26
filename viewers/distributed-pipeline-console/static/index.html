@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Distributed Pipeline Console</title><link rel="stylesheet" href="/static/styles.css"></head>
+<body>
+<header><div><h1>Distributed Pipeline Console</h1><span class="subtle">Queues · Workers · Datasets</span></div><button id="refresh">Refresh</button></header>
+<div class="layout"><aside>
+<h2>Create run</h2><form id="submit"><label>Pipeline config<input id="config" list="configOptions" placeholder="/path/to/deployment.yaml" required><datalist id="configOptions"></datalist></label><label>Run ID<input id="runId" placeholder="Automatically generated"></label><button>Create run</button></form>
+<p class="subtle">Prepare inputs in PostgreSQL, then start workers on your allocated machines.</p><h2>Runs</h2><div id="runs"></div>
+</aside><main><div id="error" role="alert"></div><div id="content"><p>Select a run to inspect its progress.</p></div></main></div>
+<script src="/static/app.js"></script></body></html>

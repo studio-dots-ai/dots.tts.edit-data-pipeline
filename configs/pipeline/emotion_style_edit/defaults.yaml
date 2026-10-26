@@ -1,0 +1,115 @@
+# @package _global_
+
+defaults:
+  - /pipeline/defaults@_global_
+  - /stage/sample/defaults@_global_.stages.sample
+  - /stage/plan/gemma4_mtp_tp2@_global_.stages.plan
+  - /stage/synth/emotion_style_index@_global_.stages.synth_index
+  - /stage/synth/emotion_style_ted@_global_.stages.synth_ted
+  - /stage/eval/emotion_style@_global_.stages.eval
+  - /stage/save/parquet@_global_.stages.save
+  - _self_
+
+pipeline: emotion_style_edit
+adapter_class: speech_edit.pipelines.emotion.stage_adapter:EmotionStyleStageAdapter
+run_dir: ${artifact:worktree}/distributed_pipeline_runs/emotion_style_edit/defaults
+
+source:
+  rows_per_item: 128
+
+queues:
+  source_items: {max_size: 4096}
+  emotion.sample_to_plan: {max_size: 16384}
+  emotion.plan_to_synth.index: {max_size: 16384}
+  emotion.plan_to_synth.ted: {max_size: 16384}
+  emotion.synth_to_eval: {max_size: 16384}
+  emotion.eval_to_save: {max_size: 16384}
+
+topology:
+  bindings:
+    source_items:
+      consumers: [sample]
+    emotion.sample_to_plan:
+      producers: [sample]
+      consumers: [plan]
+    emotion.plan_to_synth.index:
+      producers: [plan]
+      consumers: [synth_index]
+    emotion.plan_to_synth.ted:
+      producers: [plan]
+      consumers: [synth_ted]
+    emotion.synth_to_eval:
+      producers: [synth_index, synth_ted]
+      consumers: [eval]
+    emotion.eval_to_save:
+      producers: [eval]
+      consumers: [save]
+
+stages:
+  sample:
+    max_workers: 1
+  plan:
+    max_workers: 8
+
+  synth_index:
+    max_workers: 32
+
+  synth_ted:
+    max_workers: 32
+
+  eval:
+    max_workers: 16
+
+  save:
+    max_workers: 1
+
+pipeline_config:
+  seed: 42
+  utterance_batch_size_dist: {2: 5.0, 3: 4.0, 4: 1.0}
+  speaker_parquet_sources: null
+  sample_language: null
+  synthesis_mode: null
+  emotion_condition_mode: null
+  synthesis_profile_weights:
+    # Public profile axes are synthesis_mode x emotion_condition_mode.
+    # Backend is derived internally:
+    #   single/type_level -> index, single/desc -> index
+    #   multi_emo_normal/type_level -> index, multi_emo_normal/desc -> index
+    #   multi_emo_frequent/desc -> ted
+    single: {type_level: 1.0, desc: 1.0}
+    multi_emo_normal: {type_level: 1.0, desc: 1.0}
+    multi_emo_frequent: {desc: 1.0}
+  emotion_edit_mode_probs:
+    type_level: {type_change: 0.85, intensity_change: 0.15}
+    desc: {type_change: 1.0, intensity_change: 0.0}
+  emotion_tag_weights:
+    happy: 1.0
+    angry: 1.0
+    sad: 1.0
+    afraid: 1.0
+    disgusted: 1.0
+    melancholic: 1.0
+    surprised: 1.0
+    calm: 1.0
+  strict_emotion_plan: false
+  emotion_region_count_weights:
+    single: {1: 1.0}
+    multi_emo_normal: {2: 0.60, 3: 0.40}
+    multi_emo_frequent: {2: 0.60, 3: 0.40}
+  rewrite_prob: 0.0
+  llm_max_retries: 3
+  plan_text_unit_cap_en: 120
+  plan_text_unit_cap_zh: 180
+  duration_estimation_en_word_sec: 0.22
+  duration_estimation_cjk_char_sec: 0.20
+  ted_estimated_duration_soft_limit_sec: 17.0
+  ted_max_generated_duration_sec: 22.0
+  natural_language_instruction_mode: template
+  max_candidates: 1
+  aligner_backend: qwen3
+  skip_quality_eval: false
+  skip_spk_sim_eval: false
+  skip_wdtw_eval: false
+  output_dataset_name: Emilia-EmotionStyleEdit-V1
+  debug_synthesize: false
+  assembly_f5_steps: 32

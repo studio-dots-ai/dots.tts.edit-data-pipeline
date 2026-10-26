@@ -1,0 +1,10 @@
+# @package _global_
+
+defaults:
+  - emilia_large_edit
+  - _self_
+
+run_dir: ${artifact:worktree}/distributed_pipeline_runs/text_edit/emilia_zh_large_edit
+
+pipeline_config:
+  sample_language: zh

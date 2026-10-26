@@ -1,0 +1,12 @@
+defaults:
+  - /service/defaults@_here_
+  - _self_
+
+config_key: f0_eval/defaults
+port: 8034
+startup_timeout_sec: 120
+python_bin: envs/pipe-cpu/.venv/bin/python
+command: >-
+  ${shell_quote:${.python_bin}}
+  tools/f0_eval/api_service.py
+  --port ${.port}
