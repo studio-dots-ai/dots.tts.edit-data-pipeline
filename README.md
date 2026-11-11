@@ -1,7 +1,7 @@
 # dots.tts.edit Data Pipeline
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![dots.tts.edit](https://img.shields.io/badge/GitHub-dots.tts.edit-blue?logo=github)](https://github.com/studio-dots-ai/dots.tts.edit)
+[![dots.tts](https://img.shields.io/badge/GitHub-dots.tts-blue?logo=github)](https://github.com/studio-dots-ai/dots.tts)
 [![Paper](https://img.shields.io/badge/arXiv-2608.02673-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2608.02673)
 [![Model](https://img.shields.io/badge/🤗%20Hugging%20Face-dots.tts.edit-yellow)](https://huggingface.co/dots-studio/dots.tts.edit)
 [![Playground](https://img.shields.io/badge/Playground-Edit-orange)](https://dots-studio-dots-tts-edit.hf.space/)
